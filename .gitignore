@@ -1,4 +1,9 @@
 *.py[cod]
+local_settings.py
+
+# IntelliJ IDEA
+.idea/
+*.iml
 
 # C extensions
 *.so
