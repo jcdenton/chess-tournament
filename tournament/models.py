@@ -55,6 +55,12 @@ class Tournament(models.Model):
         # return len([r for r in self.round_set if not r.is_finished()]) == 0
         return self.get_games().filter(status=Status.STARTED).count() == 0
 
+    def get_latest_round(self):
+        try:
+            return self.round_set.order_by('-start_date', '-end_date', '-name', '-id')[0]
+        except IndexError:
+            return None
+
     def __unicode__(self):
         return self.name
 
