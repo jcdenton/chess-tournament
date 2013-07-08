@@ -49,7 +49,7 @@ class Tournament(models.Model):
 
     def get_games(self):
         # return [game for r in self.round_set for game in r.game_set]
-        return Game.objects.filter(round__in=self.round_set)
+        return Game.objects.filter(round__in=self.round_set.all())
 
     def is_finished(self):
         # return len([r for r in self.round_set if not r.is_finished()]) == 0
@@ -67,14 +67,14 @@ class Round(models.Model):
         return '%s / %s' % (self.finished_games_count(), self.total_games_count())
 
     def total_games_count(self):
-        return Game.objects.filter(round=self).count()
+        return self.game_set.count()
 
     def finished_games_count(self):
         # return len([game for game in self.game_set if game.is_finished()])
-        return Game.objects.filter(round=self, status=Status.FINISHED).count()
+        return self.game_set.filter(status=Status.FINISHED).count()
 
     def started_games_count(self):
-        return Game.objects.filter(round=self, status=Status.STARTED).count()
+        return self.game_set.filter(status=Status.STARTED).count()
 
     def is_finished(self):
         # return len([game for game in self.game_set if not game.is_finished()]) == 0
