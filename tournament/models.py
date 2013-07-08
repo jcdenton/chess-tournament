@@ -32,6 +32,7 @@ class Player(models.Model):
 
     def is_fide_newbie(self):
         return self.fide_id is not None and self.fide_games is not None and self.fide_games <= 30
+    is_fide_newbie.boolean = True
 
     def __unicode__(self):
         return u'%s [%s]' % (self.name, self.rating)
@@ -54,6 +55,7 @@ class Tournament(models.Model):
     def is_finished(self):
         # return len([r for r in self.round_set if not r.is_finished()]) == 0
         return self.get_games().filter(status=Status.STARTED).count() == 0
+    is_finished.boolean = True
 
     def get_latest_round(self):
         try:
@@ -85,6 +87,7 @@ class Round(models.Model):
     def is_finished(self):
         # return len([game for game in self.game_set if not game.is_finished()]) == 0
         return self.started_games_count() == 0
+    is_finished.boolean = True
 
     def __unicode__(self):
         return u'%s - %s' % (self.tournament, self.name)
@@ -121,6 +124,7 @@ class Game(models.Model):
 
     def is_finished(self):
         return self.status == self.FINISHED
+    is_finished.boolean = True
 
     def __unicode__(self):
         return u'%s vs. %s' % (self.white, self.black)
