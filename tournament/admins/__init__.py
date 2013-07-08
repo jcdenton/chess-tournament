@@ -36,6 +36,21 @@ class ChangeFormActionsMixin(AdminURLMixin):
         })
 
 
+class ForbidAddMixin(admin.ModelAdmin):
+    def has_add_permission(self, request, obj=None):
+        return False
+
+
+class ForbidChangeMixin(admin.ModelAdmin):
+    def has_change_permission(self, request, obj=None):
+        return False
+
+
+class ForbidDeleteixin(admin.ModelAdmin):
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 def change_form_action(action):
     @wraps(action)
     def closure(self, request, queryset):
