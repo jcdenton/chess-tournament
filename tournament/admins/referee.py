@@ -4,12 +4,11 @@ from django.contrib.auth.models import User
 from ..models import RefereeProfile
 
 
-class UserInline(admin.StackedInline):
-    model = User
-
-
 class RefereeProfileAdmin(admin.ModelAdmin):
-    inlines = (UserInline,)
+    def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
+        if db_field.name == 'user':
+            kwargs.update(queryset=User.objects.filter(pk=request.user.pk))
+        return super(RefereeProfileAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def has_add_permission(self, request, obj=None):
         return False
