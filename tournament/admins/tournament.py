@@ -1,10 +1,9 @@
 # -*- encoding: utf-8 -*-
 from functools import wraps
-
 from django.contrib import admin
 
-from ..admins import CreateOnlyFieldsMixin, change_form_action, ChangeFormActionsMixin, AdminURLMixin
 from ..models import Round, RefereeProfile, Tournament
+from utils import CreateOnlyFieldsMixin, AdminURLMixin, ChangeFormActionsMixin, change_form_action
 
 
 class RoundInline(admin.StackedInline):

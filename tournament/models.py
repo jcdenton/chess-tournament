@@ -131,6 +131,9 @@ class Game(models.Model):
 
 
 class Score(models.Model):
+    WIN = 1.0
+    DRAW = 0.5
+    DEFEAT = 0.0
     tournament = models.ForeignKey(Tournament)
     player = models.ForeignKey(Player)
     game = models.ForeignKey(Game)
