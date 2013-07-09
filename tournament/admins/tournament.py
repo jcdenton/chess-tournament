@@ -31,8 +31,7 @@ def referee_required(permission_check_method):
 
 
 class TournamentAdmin(CreateOnlyFieldsMixin, ChangeFormActionsMixin, AdminURLMixin):
-    change_form_template = 'admin/tournament_change_form.html'
-    list_display = ('name', 'referee', 'players_count', 'start_date', 'end_date', 'is_finished')
+    list_display = ('name', 'referee', 'players_count', 'start_date', 'end_date', 'finished')
     filter_horizontal = ('players',)
     create_only_fields = ('players',)
     inlines = (RoundInline,)
