@@ -3,13 +3,19 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 import django_countries
+from tournament import EloRatingMixin
+
+
+class Side(object):
+    WHITE = 'white'
+    BLACK = 'black'
 
 
 class RefereeProfile(models.Model):
     user = models.OneToOneField(User)
 
     def __unicode__(self):
-        return ' '.join((self.user.first_name, self.user.last_name)) \
+        return u' '.join((self.user.first_name, self.user.last_name)) \
             if self.user.first_name is not None and self.user.last_name is not None \
             else super(RefereeProfile, self).__unicode__()
 
@@ -19,6 +25,7 @@ class RefereeProfile(models.Model):
             p = RefereeProfile()
             p.user = instance
             p.save()
+
 
 post_save.connect(RefereeProfile.user_post_save, sender=User)
 
@@ -32,6 +39,7 @@ class Player(models.Model):
 
     def is_fide_newbie(self):
         return self.fide_id is not None and self.fide_games is not None and self.fide_games <= 30
+
     is_fide_newbie.boolean = True
 
     def __unicode__(self):
@@ -44,32 +52,38 @@ class Tournament(models.Model):
     referee = models.ForeignKey(RefereeProfile)
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
+    finished = models.BooleanField()
 
     def players_count(self):
         return self.players.count()
 
     def get_games(self):
-        # return [game for r in self.round_set for game in r.game_set]
         return Game.objects.filter(round__in=self.round_set.all())
 
-    def is_finished(self):
-        # return len([r for r in self.round_set if not r.is_finished()]) == 0
-        return self.get_games().filter(status=Status.STARTED).count() == 0
-    is_finished.boolean = True
+    def get_started_games(self):
+        return self.get_games().filter(finished=False)
 
     def get_latest_round(self):
         try:
-            return self.round_set.order_by('-start_date', '-end_date', '-name', '-id')[0]
+            rounds = self.round_set.order_by('-start_date', '-end_date', '-name', '-id')
+            if rounds[0].total_games_count() == 0 and rounds.count() > 1:
+                return rounds[1]
+            else:
+                return rounds[0]
         except IndexError:
             return None
+
+    def get_player_scores(self, player):
+        return player.score_set.filter(game__tournament_id=self.pk)
 
     def __unicode__(self):
         return self.name
 
 
-class Round(models.Model):
+class Round(EloRatingMixin, models.Model):
     name = models.CharField(max_length=128)
     tournament = models.ForeignKey(Tournament)
+    finished = models.BooleanField()
 
     def games_count(self):
         return '%s / %s' % (self.finished_games_count(), self.total_games_count())
@@ -78,53 +92,28 @@ class Round(models.Model):
         return self.game_set.count()
 
     def finished_games_count(self):
-        # return len([game for game in self.game_set if game.is_finished()])
-        return self.game_set.filter(status=Status.FINISHED).count()
+        return self.game_set.filter(finished=True).count()
 
     def started_games_count(self):
-        return self.game_set.filter(status=Status.STARTED).count()
-
-    def is_finished(self):
-        # return len([game for game in self.game_set if not game.is_finished()]) == 0
-        return self.started_games_count() == 0
-    is_finished.boolean = True
+        return self.game_set.filter(finished=False).count()
 
     def __unicode__(self):
         return u'%s - %s' % (self.tournament, self.name)
 
 
-class Status(object):
-    STARTED = 'started'
-    FINISHED = 'finished'
-    DRAW = 'draw'
-
-
-class Side(object):
-    WHITE = 'white'
-    BLACK = 'black'
-
-
 class Game(models.Model):
-    STATUS_CHOICES = (
-        (Status.STARTED, 'Started'),
-        (Status.FINISHED, 'Finished')
-    )
     WINNER_CHOICES = (
         (Side.WHITE, 'White'),
         (Side.BLACK, 'Black'),
-        (None, 'DRAW')
+        (None, 'Draw')
     )
     white = models.ForeignKey(Player, related_name='game_set_white')
     black = models.ForeignKey(Player, related_name='game_set_black')
-    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default=Status.STARTED)
+    finished = models.BooleanField()
     round = models.ForeignKey(Round)
     winner = models.CharField(max_length=5, choices=WINNER_CHOICES, default=None)
-    start_date = models.DateTimeField(auto_now_add=True, editable=True)
+    start_date = models.DateTimeField()
     end_date = models.DateTimeField(blank=True, null=True)
-
-    def is_finished(self):
-        return self.status == self.FINISHED
-    is_finished.boolean = True
 
     def __unicode__(self):
         return u'%s vs. %s' % (self.white, self.black)
@@ -134,14 +123,15 @@ class Score(models.Model):
     WIN = 1.0
     DRAW = 0.5
     DEFEAT = 0.0
-    tournament = models.ForeignKey(Tournament)
+    SIDE_CHOICES = (
+        (Side.WHITE, 'White'),
+        (Side.BLACK, 'Black')
+    )
     player = models.ForeignKey(Player)
+    side = models.CharField(max_length=5, choices=SIDE_CHOICES)
     game = models.ForeignKey(Game)
-    score = models.FloatField()
-
-    def add_score(self, score):
-        self.score += score
-        self.save()
+    score = models.FloatField(default=0.0)
+    rating_delta = models.FloatField(default=0.0)
 
     def __unicode__(self):
-        return u'%s - %2.2f' % (self.player, self.score)
+        return u'%s: %.1f (%+1.1f)' % (self.player, self.score, self.rating_delta)
