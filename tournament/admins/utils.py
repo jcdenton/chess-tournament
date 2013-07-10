@@ -1,25 +1,27 @@
 # -*- encoding: utf-8 -*-
 from functools import wraps
-from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.core import urlresolvers
 from django.shortcuts import redirect
 
 
-class CreateOnlyFieldsMixin(admin.ModelAdmin):
+class CreateOnlyFieldsMixin(object):
     create_only_fields = ()
 
     def get_readonly_fields(self, request, obj=None):
         return self.readonly_fields if obj is None else self.create_only_fields or ()
 
 
-class AdminURLMixin(admin.ModelAdmin):
+class AdminURLMixin(object):
     def get_admin_url_pattern(self, action='change'):
         ct = ContentType.objects.get_for_model(self.model)
         return 'admin:%s_%s_%s' % (ct.app_label, ct.model, action)
 
 
 class ChangeFormActionsMixin(AdminURLMixin):
+    add_form_template = 'admin/change_form.html'
+    change_form_template = 'admin/custom_change_form.html'
+
     def change_view(self, request, object_id, form_url='', extra_context=None):
         actions = self.get_actions(request)
         if actions:
@@ -36,17 +38,17 @@ class ChangeFormActionsMixin(AdminURLMixin):
         })
 
 
-class ForbidAddMixin(admin.ModelAdmin):
+class ForbidAddMixin(object):
     def has_add_permission(self, request, obj=None):
         return False
 
 
-class ForbidChangeMixin(admin.ModelAdmin):
+class ForbidChangeMixin(object):
     def has_change_permission(self, request, obj=None):
         return False
 
 
-class ForbidDeleteMixin(admin.ModelAdmin):
+class ForbidDeleteMixin(object):
     def has_delete_permission(self, request, obj=None):
         return False
 

@@ -1,21 +1,16 @@
 # -*- encoding: utf-8 -*-
 from functools import wraps
-from django.contrib import admin
+from django.contrib import admin, messages
 
 from ..models import Round, RefereeProfile, Tournament
-from utils import CreateOnlyFieldsMixin, AdminURLMixin, ChangeFormActionsMixin, change_form_action
+from utils import CreateOnlyFieldsMixin, ChangeFormActionsMixin, change_form_action, ForbidAddMixin, \
+    ForbidDeleteMixin
 
 
-class RoundInline(admin.StackedInline):
+class RoundInline(ForbidAddMixin, admin.StackedInline):
     template = 'admin/round_stacked_inline.html'
     model = Round
     extra = 0
-
-    def has_add_permission(self, request, obj=None):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
 
 def referee_required(permission_check_method):
@@ -30,7 +25,7 @@ def referee_required(permission_check_method):
     return closure
 
 
-class TournamentAdmin(CreateOnlyFieldsMixin, ChangeFormActionsMixin, AdminURLMixin):
+class TournamentAdmin(CreateOnlyFieldsMixin, ChangeFormActionsMixin, admin.ModelAdmin):
     list_display = ('name', 'referee', 'players_count', 'start_date', 'end_date', 'finished')
     filter_horizontal = ('players',)
     create_only_fields = ('players',)
@@ -39,7 +34,7 @@ class TournamentAdmin(CreateOnlyFieldsMixin, ChangeFormActionsMixin, AdminURLMix
 
     def formfield_for_foreignkey(self, db_field, request=None, **kwargs):
         if db_field.name == 'referee':
-            kwargs.update(queryset=RefereeProfile.objects.filter(user_id=request.user.pk))
+            kwargs.update(queryset=RefereeProfile.objects.filter(user=request.user))
         return super(TournamentAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     @referee_required
@@ -52,7 +47,10 @@ class TournamentAdmin(CreateOnlyFieldsMixin, ChangeFormActionsMixin, AdminURLMix
 
     @change_form_action
     def next_round(self, request, queryset):
-        pass
+        try:
+            queryset[0].finish_round()
+        except UserWarning, e:
+            self.message_user(request, e, level=messages.ERROR)
 
 
 admin.site.register(Tournament, TournamentAdmin)
