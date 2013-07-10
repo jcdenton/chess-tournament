@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 import django_countries
-from tournament import EloRatingMixin
 
 
 class Side(object):
@@ -11,13 +10,18 @@ class Side(object):
     BLACK = 'black'
 
 
+class Scores(object):
+    WIN = 1.0
+    DRAW = 0.5
+    DEFEAT = 0.0
+
+
 class RefereeProfile(models.Model):
     user = models.OneToOneField(User)
 
     def __unicode__(self):
-        return u' '.join((self.user.first_name, self.user.last_name)) \
-            if self.user.first_name is not None and self.user.last_name is not None \
-            else super(RefereeProfile, self).__unicode__()
+        result = u' '.join((self.user.first_name, self.user.last_name))
+        return result if not result.isspace() else self.user.__unicode__()
 
     @staticmethod
     def user_post_save(sender, instance, created, **kwargs):
@@ -46,7 +50,10 @@ class Player(models.Model):
         return u'%s [%s]' % (self.name, self.rating)
 
 
-class Tournament(models.Model):
+from tournament import SwissSystemMixin
+
+
+class Tournament(models.Model, SwissSystemMixin):
     name = models.CharField(max_length=128)
     players = models.ManyToManyField(Player)
     referee = models.ForeignKey(RefereeProfile)
@@ -65,7 +72,7 @@ class Tournament(models.Model):
 
     def get_latest_round(self):
         try:
-            rounds = self.round_set.order_by('-start_date', '-end_date', '-name', '-id')
+            rounds = self.round_set.order_by('-start_date', '-id')
             if rounds[0].total_games_count() == 0 and rounds.count() > 1:
                 return rounds[1]
             else:
@@ -74,15 +81,17 @@ class Tournament(models.Model):
             return None
 
     def get_player_scores(self, player):
-        return player.score_set.filter(game__tournament_id=self.pk)
+        return player.score_set.filter(game__in=self.get_games().all())
 
     def __unicode__(self):
         return self.name
 
 
-class Round(EloRatingMixin, models.Model):
+class Round(models.Model):
     name = models.CharField(max_length=128)
     tournament = models.ForeignKey(Tournament)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
     finished = models.BooleanField()
 
     def games_count(self):
@@ -101,17 +110,20 @@ class Round(EloRatingMixin, models.Model):
         return u'%s - %s' % (self.tournament, self.name)
 
 
-class Game(models.Model):
+from tournament import EloRatingMixin
+
+
+class Game(EloRatingMixin, models.Model):
     WINNER_CHOICES = (
         (Side.WHITE, 'White'),
         (Side.BLACK, 'Black'),
         (None, 'Draw')
     )
-    white = models.ForeignKey(Player, related_name='game_set_white')
-    black = models.ForeignKey(Player, related_name='game_set_black')
+    white = models.ForeignKey(Player, blank=True, null=True, related_name='game_set_white')
+    black = models.ForeignKey(Player, blank=True, null=True, related_name='game_set_black')
     finished = models.BooleanField()
     round = models.ForeignKey(Round)
-    winner = models.CharField(max_length=5, choices=WINNER_CHOICES, default=None)
+    winner = models.CharField(blank=True, null=True, max_length=5, choices=WINNER_CHOICES, default=None)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField(blank=True, null=True)
 
@@ -120,9 +132,6 @@ class Game(models.Model):
 
 
 class Score(models.Model):
-    WIN = 1.0
-    DRAW = 0.5
-    DEFEAT = 0.0
     SIDE_CHOICES = (
         (Side.WHITE, 'White'),
         (Side.BLACK, 'Black')
