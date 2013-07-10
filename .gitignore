@@ -1,5 +1,7 @@
 *.py[cod]
 local_settings.py
+out/*
+chess.db
 
 # IntelliJ IDEA
 .idea/
