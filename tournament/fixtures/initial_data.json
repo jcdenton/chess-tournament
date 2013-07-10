@@ -1,0 +1,1013 @@
+[
+	{
+		"pk": 1,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "permission",
+			"name": "permission",
+			"app_label": "auth"
+		}
+	},
+	{
+		"pk": 2,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "group",
+			"name": "group",
+			"app_label": "auth"
+		}
+	},
+	{
+		"pk": 3,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "user",
+			"name": "user",
+			"app_label": "auth"
+		}
+	},
+	{
+		"pk": 4,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "contenttype",
+			"name": "content type",
+			"app_label": "contenttypes"
+		}
+	},
+	{
+		"pk": 5,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "session",
+			"name": "session",
+			"app_label": "sessions"
+		}
+	},
+	{
+		"pk": 6,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "site",
+			"name": "site",
+			"app_label": "sites"
+		}
+	},
+	{
+		"pk": 7,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "logentry",
+			"name": "log entry",
+			"app_label": "admin"
+		}
+	},
+	{
+		"pk": 8,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "refereeprofile",
+			"name": "referee profile",
+			"app_label": "tournament"
+		}
+	},
+	{
+		"pk": 9,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "player",
+			"name": "player",
+			"app_label": "tournament"
+		}
+	},
+	{
+		"pk": 10,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "tournament",
+			"name": "tournament",
+			"app_label": "tournament"
+		}
+	},
+	{
+		"pk": 11,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "round",
+			"name": "round",
+			"app_label": "tournament"
+		}
+	},
+	{
+		"pk": 12,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "game",
+			"name": "game",
+			"app_label": "tournament"
+		}
+	},
+	{
+		"pk": 13,
+		"model": "contenttypes.contenttype",
+		"fields": {
+			"model": "score",
+			"name": "score",
+			"app_label": "tournament"
+		}
+	},
+	{
+		"pk": "19t3usm0wz2jgld44f2xejjabnd7lvdi",
+		"model": "sessions.session",
+		"fields": {
+			"expire_date": "2013-07-24T02:26:15.294Z",
+			"session_data": "OWM5OTU5OTRkMTM4ODFkNTk5NTZmZTE0Y2Q0ODE3OWE3OTcxM2M3MjqAAn1xAShVEl9hdXRoX3VzZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHEDVQ1fYXV0aF91c2VyX2lkcQRLAXUu"
+		}
+	},
+	{
+		"pk": "iwc1tkhg7pxzs3vj61stl3koimbvegxu",
+		"model": "sessions.session",
+		"fields": {
+			"expire_date": "2013-07-24T04:20:58.990Z",
+			"session_data": "OWM5OTU5OTRkMTM4ODFkNTk5NTZmZTE0Y2Q0ODE3OWE3OTcxM2M3MjqAAn1xAShVEl9hdXRoX3VzZXJfYmFja2VuZHECVSlkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZHEDVQ1fYXV0aF91c2VyX2lkcQRLAXUu"
+		}
+	},
+	{
+		"pk": 1,
+		"model": "sites.site",
+		"fields": {
+			"domain": "example.com",
+			"name": "example.com"
+		}
+	},
+	{
+		"pk": 1,
+		"model": "tournament.player",
+		"fields": {
+			"fide_id": null,
+			"country": "BY",
+			"fide_games": null,
+			"name": "Player 1",
+			"rating": 2500
+		}
+	},
+	{
+		"pk": 2,
+		"model": "tournament.player",
+		"fields": {
+			"fide_id": null,
+			"country": "RE",
+			"fide_games": null,
+			"name": "Player 2",
+			"rating": 2600
+		}
+	},
+	{
+		"pk": 3,
+		"model": "tournament.player",
+		"fields": {
+			"fide_id": null,
+			"country": "PL",
+			"fide_games": null,
+			"name": "Player 3",
+			"rating": 2556
+		}
+	},
+	{
+		"pk": 4,
+		"model": "tournament.player",
+		"fields": {
+			"fide_id": null,
+			"country": "RU",
+			"fide_games": null,
+			"name": "Player 4",
+			"rating": 2554
+		}
+	},
+	{
+		"pk": 5,
+		"model": "tournament.player",
+		"fields": {
+			"fide_id": null,
+			"country": "DE",
+			"fide_games": null,
+			"name": "Player 5",
+			"rating": 1488
+		}
+	},
+	{
+		"pk": 1,
+		"model": "tournament.tournament",
+		"fields": {
+			"referee": 1,
+			"name": "Test Tournament",
+			"end_date": null,
+			"players": [1, 2, 3, 4, 5],
+			"finished": false,
+			"start_date": "2013-07-10"
+		}
+	},
+	{
+		"pk": 1,
+		"model": "tournament.round",
+		"fields": {
+			"finished": false,
+			"tournament": 1,
+			"name": "Round 1",
+			"end_date": null,
+			"start_date": "2013-07-10"
+		}
+	},
+	{
+		"pk": 1,
+		"model": "tournament.game",
+		"fields": {
+			"end_date": null,
+			"winner": null,
+			"round": 1,
+			"finished": false,
+			"black": 2,
+			"white": 4,
+			"start_date": "2013-07-10T05:08:02.962Z"
+		}
+	},
+	{
+		"pk": 2,
+		"model": "tournament.game",
+		"fields": {
+			"end_date": null,
+			"winner": null,
+			"round": 1,
+			"finished": false,
+			"black": 3,
+			"white": 1,
+			"start_date": "2013-07-10T05:08:03.077Z"
+		}
+	},
+	{
+		"pk": 3,
+		"model": "tournament.game",
+		"fields": {
+			"end_date": null,
+			"winner": null,
+			"round": 1,
+			"finished": false,
+			"black": 5,
+			"white": null,
+			"start_date": "2013-07-10T05:08:03.219Z"
+		}
+	},
+	{
+		"pk": 1,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_permission",
+			"name": "Can add permission",
+			"content_type": 1
+		}
+	},
+	{
+		"pk": 2,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_permission",
+			"name": "Can change permission",
+			"content_type": 1
+		}
+	},
+	{
+		"pk": 3,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_permission",
+			"name": "Can delete permission",
+			"content_type": 1
+		}
+	},
+	{
+		"pk": 4,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_group",
+			"name": "Can add group",
+			"content_type": 2
+		}
+	},
+	{
+		"pk": 5,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_group",
+			"name": "Can change group",
+			"content_type": 2
+		}
+	},
+	{
+		"pk": 6,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_group",
+			"name": "Can delete group",
+			"content_type": 2
+		}
+	},
+	{
+		"pk": 7,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_user",
+			"name": "Can add user",
+			"content_type": 3
+		}
+	},
+	{
+		"pk": 8,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_user",
+			"name": "Can change user",
+			"content_type": 3
+		}
+	},
+	{
+		"pk": 9,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_user",
+			"name": "Can delete user",
+			"content_type": 3
+		}
+	},
+	{
+		"pk": 10,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_contenttype",
+			"name": "Can add content type",
+			"content_type": 4
+		}
+	},
+	{
+		"pk": 11,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_contenttype",
+			"name": "Can change content type",
+			"content_type": 4
+		}
+	},
+	{
+		"pk": 12,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_contenttype",
+			"name": "Can delete content type",
+			"content_type": 4
+		}
+	},
+	{
+		"pk": 13,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_session",
+			"name": "Can add session",
+			"content_type": 5
+		}
+	},
+	{
+		"pk": 14,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_session",
+			"name": "Can change session",
+			"content_type": 5
+		}
+	},
+	{
+		"pk": 15,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_session",
+			"name": "Can delete session",
+			"content_type": 5
+		}
+	},
+	{
+		"pk": 16,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_site",
+			"name": "Can add site",
+			"content_type": 6
+		}
+	},
+	{
+		"pk": 17,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_site",
+			"name": "Can change site",
+			"content_type": 6
+		}
+	},
+	{
+		"pk": 18,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_site",
+			"name": "Can delete site",
+			"content_type": 6
+		}
+	},
+	{
+		"pk": 19,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_logentry",
+			"name": "Can add log entry",
+			"content_type": 7
+		}
+	},
+	{
+		"pk": 20,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_logentry",
+			"name": "Can change log entry",
+			"content_type": 7
+		}
+	},
+	{
+		"pk": 21,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_logentry",
+			"name": "Can delete log entry",
+			"content_type": 7
+		}
+	},
+	{
+		"pk": 22,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_refereeprofile",
+			"name": "Can add referee profile",
+			"content_type": 8
+		}
+	},
+	{
+		"pk": 23,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_refereeprofile",
+			"name": "Can change referee profile",
+			"content_type": 8
+		}
+	},
+	{
+		"pk": 24,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_refereeprofile",
+			"name": "Can delete referee profile",
+			"content_type": 8
+		}
+	},
+	{
+		"pk": 25,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_player",
+			"name": "Can add player",
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 26,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_player",
+			"name": "Can change player",
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 27,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_player",
+			"name": "Can delete player",
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 28,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_tournament",
+			"name": "Can add tournament",
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 29,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_tournament",
+			"name": "Can change tournament",
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 30,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_tournament",
+			"name": "Can delete tournament",
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 31,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_round",
+			"name": "Can add round",
+			"content_type": 11
+		}
+	},
+	{
+		"pk": 32,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_round",
+			"name": "Can change round",
+			"content_type": 11
+		}
+	},
+	{
+		"pk": 33,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_round",
+			"name": "Can delete round",
+			"content_type": 11
+		}
+	},
+	{
+		"pk": 34,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_game",
+			"name": "Can add game",
+			"content_type": 12
+		}
+	},
+	{
+		"pk": 35,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_game",
+			"name": "Can change game",
+			"content_type": 12
+		}
+	},
+	{
+		"pk": 36,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_game",
+			"name": "Can delete game",
+			"content_type": 12
+		}
+	},
+	{
+		"pk": 37,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "add_score",
+			"name": "Can add score",
+			"content_type": 13
+		}
+	},
+	{
+		"pk": 38,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "change_score",
+			"name": "Can change score",
+			"content_type": 13
+		}
+	},
+	{
+		"pk": 39,
+		"model": "auth.permission",
+		"fields": {
+			"codename": "delete_score",
+			"name": "Can delete score",
+			"content_type": 13
+		}
+	},
+	{
+		"pk": 1,
+		"model": "auth.user",
+		"fields": {
+			"username": "admin",
+			"first_name": "Ivan",
+			"last_name": "Bruzgin",
+			"is_active": true,
+			"is_superuser": true,
+			"is_staff": true,
+			"last_login": "2013-07-10T02:26:15.192Z",
+			"groups": [],
+			"user_permissions": [],
+			"password": "pbkdf2_sha256$10000$GA8oB2RTX6kZ$H+NStM+xS8N4eYkQwsJXGg4aMtCeGW3+mGBEnRtfv2A=",
+			"email": "admin@localhost",
+			"date_joined": "2013-07-10T02:24:39.716Z"
+		}
+	},
+	{
+		"pk": 1,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 1,
+			"action_time": "2013-07-10T02:26:41.758Z",
+			"object_repr": "Player 1 [2500]",
+			"object_id": "1",
+			"change_message": "",
+			"user": 1,
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 2,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 1,
+			"action_time": "2013-07-10T02:27:01.553Z",
+			"object_repr": "Player 2 [2600]",
+			"object_id": "2",
+			"change_message": "",
+			"user": 1,
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 3,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 1,
+			"action_time": "2013-07-10T02:27:11.508Z",
+			"object_repr": "Player 3 [2500]",
+			"object_id": "3",
+			"change_message": "",
+			"user": 1,
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 4,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 1,
+			"action_time": "2013-07-10T02:27:44.994Z",
+			"object_repr": "Player 4 [2554]",
+			"object_id": "4",
+			"change_message": "",
+			"user": 1,
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 5,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T02:27:52.215Z",
+			"object_repr": "Player 3 [2556]",
+			"object_id": "3",
+			"change_message": "Changed rating.",
+			"user": 1,
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 6,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 1,
+			"action_time": "2013-07-10T02:28:12.161Z",
+			"object_repr": "Player 5 [1488]",
+			"object_id": "5",
+			"change_message": "",
+			"user": 1,
+			"content_type": 9
+		}
+	},
+	{
+		"pk": 7,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 1,
+			"action_time": "2013-07-10T02:28:31.917Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 8,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T02:43:42.947Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 9,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T02:44:52.076Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 10,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T02:52:29.448Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 11,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T02:54:30.359Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 12,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T02:55:29.189Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 13,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T02:56:33.902Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 14,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T02:57:58.944Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 15,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:00:23.758Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 16,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:01:10.854Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 17,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:07:46.790Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 18,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:09:30.110Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 19,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:13:23.998Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 20,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:14:20.471Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 21,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:19:10.963Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 22,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:22:29.851Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 23,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:26:01.764Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 24,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:28:39.143Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 25,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:30:47.039Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 26,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:31:56.545Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 27,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:32:23.651Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 28,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 2,
+			"action_time": "2013-07-10T03:32:34.921Z",
+			"object_repr": "Test Tournament",
+			"object_id": "1",
+			"change_message": "Deleted round \"Test Tournament - Round 1\".",
+			"user": 1,
+			"content_type": 10
+		}
+	},
+	{
+		"pk": 29,
+		"model": "admin.logentry",
+		"fields": {
+			"action_flag": 3,
+			"action_time": "2013-07-10T05:07:54.037Z",
+			"object_repr": "Test Tournament - Round 1",
+			"object_id": "1",
+			"change_message": "",
+			"user": 1,
+			"content_type": 11
+		}
+	},
+	{
+		"pk": 1,
+		"model": "tournament.refereeprofile",
+		"fields": {
+			"user": 1
+		}
+	}
+]
