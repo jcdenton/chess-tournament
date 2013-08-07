@@ -65,7 +65,7 @@ class Tournament(models.Model, SwissSystemMixin):
         return self.players.count()
 
     def get_games(self):
-        return Game.objects.filter(round__in=self.round_set.all())
+        return Game.objects.filter(round__tournament=self)
 
     def get_started_games(self):
         return self.get_games().filter(finished=False)
