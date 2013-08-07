@@ -1,0 +1,13 @@
+.hero-unit {
+    margin-top: 3.4em;
+    max-height: 40em;
+    padding-top: 1em;
+}
+
+.tab-content {
+    max-height: 37em;
+}
+
+.nav-tabs {
+    font-weight: bold;
+}
