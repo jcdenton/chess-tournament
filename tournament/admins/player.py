@@ -6,6 +6,7 @@ from ..models import Player
 
 class PlayerAdmin(admin.ModelAdmin):
     list_display = ('name', 'country', 'rating', 'fide_id', 'fide_games', 'is_fide_newbie')
+    search_fields = ('name', 'country')
 
 
 admin.site.register(Player, PlayerAdmin)

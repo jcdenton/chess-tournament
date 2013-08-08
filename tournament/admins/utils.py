@@ -1,15 +1,14 @@
 # -*- encoding: utf-8 -*-
 from functools import wraps
+
+from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.core import urlresolvers
 from django.shortcuts import redirect
 
 
-class CreateOnlyFieldsMixin(object):
-    create_only_fields = ()
-
-    def get_readonly_fields(self, request, obj=None):
-        return self.readonly_fields if obj is None else self.create_only_fields or ()
+class CustomStackedInline(admin.StackedInline):
+    template = 'admin/custom_stacked_inline.html'
 
 
 class AdminURLMixin(object):
@@ -61,3 +60,38 @@ def change_form_action(action):
 
     closure.change_form_action = True
     return closure
+
+
+def get_fk_field_link(name, description=None, attribute=None):
+    attribute = attribute or name
+    description = description or name
+
+    def closure(self, obj):
+        change_url = urlresolvers.reverse('admin:%s_%s_change' % (self.model._meta.app_label, name), args=(getattr(obj, attribute).pk,))
+        return u'<a href="%s">%s</a>' % (change_url, getattr(obj, attribute))
+
+    closure.allow_tags = True
+    closure.short_description = description
+
+    return closure
+
+
+def get_deep_attr(obj, attributes):
+    attr, sep, rest = attributes.partition('.')
+    return get_deep_attr(getattr(obj, attr), rest) if attributes else obj
+
+
+def owner_required(attributes='user'):
+
+    def wrapper(permission_check_method):
+        @wraps(permission_check_method)
+        def closure(self, request, obj=None):
+            if permission_check_method(self, request, obj):
+                if obj is not None and request.user != get_deep_attr(obj, attributes):
+                    return False
+                return True
+            return False
+
+        return closure
+
+    return wrapper
