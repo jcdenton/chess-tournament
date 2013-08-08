@@ -1,0 +1,9 @@
+{% load kwacros %}
+{% kwacro menuitem text href align='right' %}
+    <ul class="nav pull-{{ align }}">
+        <li><a href="{% url href %}"><h4>{{ text }}</h4></a></li>
+    </ul>
+{% endkwacro %}
+
+{% usekwacro menuitem 'Tournaments' 'tournament:tournaments' align='left' %}
+{#{% usekwacro menuitem 'Referees' 'tournament:referees' %}#}
