@@ -13,10 +13,12 @@ from .models import Side, Scores
 class EloRatingMixin(object):
     def update_scores(self):
         self.score_set.clear()
-        self.score_set.create(game=self, player=self.white, side=Side.WHITE, score=self.get_side_score(Side.WHITE),
-                              rating_delta=self.get_rating_delta(self.white, self.black, self.get_side_score(Side.WHITE)))
-        self.score_set.create(game=self, player=self.black, side=Side.BLACK, score=self.get_side_score(Side.BLACK),
-                              rating_delta=self.get_rating_delta(self.black, self.white, self.get_side_score(Side.BLACK)))
+        self.score_set.create(player=self.white, side=Side.WHITE, score=self.get_side_score(Side.WHITE),
+                              rating_delta=self.get_rating_delta(self.white, self.black,
+                                                                 self.get_side_score(Side.WHITE)))
+        self.score_set.create(player=self.black, side=Side.BLACK, score=self.get_side_score(Side.BLACK),
+                              rating_delta=self.get_rating_delta(self.black, self.white,
+                                                                 self.get_side_score(Side.BLACK)))
 
     def get_side_score(self, side):
         if self.winner == side:
@@ -45,16 +47,12 @@ class SwissSystemMixin(object):
     def finish_current_round(self, next_round_name=None):
         if self.finished:
             raise UserWarning(u'The tournament "%s" is already finished' % self)
-
         if self.get_started_games().count() != 0:
             raise UserWarning(u'Some games are not finished yet')
 
         current_round = self.get_latest_round()
         if current_round is not None:
-            if not current_round.finished:
-                raise UserWarning(u'Round "%s" is not finished yet' % current_round)
-            for game in current_round.game_set.all():
-                game.update_scores()
+            self.update_round_scores(current_round)
 
         if self.round_set.count() < self.max_round_count():
             self.start_next_round(next_round_name)
@@ -67,12 +65,21 @@ class SwissSystemMixin(object):
         self.end_date = datetime.now()
         self.save()
 
+    def update_round_scores(self, current_round):
+        if not current_round.finished:
+            raise UserWarning(u'Round "%s" is not finished yet' % current_round)
+
+        for game in current_round.game_set.all():
+            game.update_scores()
+
     def start_next_round(self, next_round_name):
         if next_round_name is None:
             next_round_name = u'Round %s' % str(self.round_set.count() + 1)
-        r = self.round_set.create(name=next_round_name, tournament=self, start_date=datetime.now())
+
+        next_round = self.round_set.create(name=next_round_name, start_date=datetime.now())
+
         for pair in self.pair_players():
-            r.game_set.create(round=r, start_date=datetime.now(), **self.map_colors(pair))
+            next_round.game_set.create(start_date=datetime.now(), **self.map_colors(pair))
 
     def max_round_count(self):
         return round(math.log(self.players.count(), 2)) + round(math.log(self.players.count(), 2))
@@ -107,10 +114,22 @@ class SwissSystemMixin(object):
     def get_player_summary_score(self, player):
         return self.get_player_scores(player).aggregate(Sum('score'))
 
+    def get_tournament_pairs(self):
+        pairs = set((game.white, game.black) for game in self.get_games().all())
+        return pairs | set(reversed(pair) for pair in pairs)
+
     def pair_players_group(self, group):
         players_count = len(group)
 
-        pairs = [(group[i], group[players_count / 2 + i]) for i in range(players_count / 2)]
+        pairs = []
+
+        played_pairs = self.get_tournament_pairs()
+        for i in range(players_count / 2):
+            pair = (group[i], group[2 * i])
+            if pair in played_pairs:
+                pass  # TODO Repeat-excluding magic
+            pairs.append(pair)
+
         if players_count % 2 != 0:
             pairs.append((group[players_count - 1], None))
 
