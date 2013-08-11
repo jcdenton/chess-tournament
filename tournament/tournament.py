@@ -72,6 +72,10 @@ class SwissSystemMixin(object):
             self.update_round_scores(current_round)
 
     def update_round_scores(self, current_round):
+        """
+        :param current_round: currently latest Round
+        :type current_round: Round
+        """
         if not current_round.finished:
             raise UserWarning(u'"%s" is not finished yet' % current_round)
 
@@ -79,6 +83,10 @@ class SwissSystemMixin(object):
             game.update_scores()
 
     def start_next_round(self, next_round_name):
+        """
+        :param next_round_name: next round name
+        :type next_round_name: basestring
+        """
         if next_round_name is None:
             next_round_name = u'Round %s' % str(self.round_set.count() + 1)
 
@@ -87,21 +95,41 @@ class SwissSystemMixin(object):
             next_round.game_set.create(start_date=datetime.now(), **self.map_colors(pair))
 
     def update_ratings(self):
+        """
+        Updates players ratings based on this tournament resulting scores.
+        """
         for player in self.players.all():
             player.rating += self.get_player_scores(player).aggregate(models.Sum('rating_delta'))
             player.save()
 
     def pair_players(self):
+        """
+        Returns list of player pairs.
+        :returns: list of player pairs
+        :rtype: list
+        """
         return list(itertools.chain.from_iterable(map(self.pair_players_group,
                                                       self.normalize_groups(self.group_players()))))
 
     def normalize_groups(self, groups):
+        """
+        Normalizes groups by making them having even number of players each (except the last one).
+        :param groups: list of groups
+        :type groups: list
+        :returns: normalized list of groups
+        :rtype: list
+        """
         for (i, group) in enumerate(groups):
             if len(group) % 2 != 0 and i < len(groups) - 1:
                 groups[i + 1].insert(0, group.pop())
         return groups
 
     def group_players(self):
+        """
+        Groups players by current tournament score and sorts them by score/rating inside those groups.
+        :returns: list of lists of players
+        :rtype: list
+        """
         return [self.sort_players(igroup) for (score, igroup) in sorted(
             itertools.groupby(self.players.all(), self.get_player_summary_score),
             reverse=True, key=operator.itemgetter(0))]
@@ -110,10 +138,20 @@ class SwissSystemMixin(object):
         return self.get_player_scores(player).aggregate(models.Sum('score'))
 
     def get_tournament_pairs(self):
+        """
+        Returns permutations of pairs already been played in this tournament.
+        :rtype: set
+        """
         pairs = set((game.white, game.black) for game in self.get_games().all())
         return pairs | set(map(reversed, pairs))
 
     def pair_players_group(self, group):
+        """
+        Returns list of player pairs.
+        :param group: list of grouped players
+        :type group: list
+        :rtype: list
+        """
         pairs = []
         group = group[:]
         players_count = len(group)
@@ -131,6 +169,12 @@ class SwissSystemMixin(object):
         return pairs
 
     def get_played_sides(self, pair):
+        """
+        Returns dict of dicts, countaining played games number for each side: { player: { color: games_count } }.
+        :param pair: pair of players
+        :type pair: tuple
+        :rtype: dict
+        """
         past_games = {}
 
         for player in pair:
@@ -142,6 +186,12 @@ class SwissSystemMixin(object):
         return past_games
 
     def map_colors(self, pair):
+        """
+        Returns dict of { color: player } entries.
+        :param pair: pair of players
+        :type pair: tuple
+        :rtype: dict
+        """
         past_games = self.get_played_sides(pair)
 
         if past_games[pair[0]][Side.WHITE] < past_games[pair[1]][Side.WHITE]:
@@ -159,6 +209,9 @@ class SwissSystemMixin(object):
     def sort_players(self, players=None):
         """
         Sorts the players by their rating in the first round and by current tournament score in all the following ones.
+        :param players: players iterable. If missing - will use self.players.all()
+        :type players: Iterable
+        :rtype: list
         """
         if players is None:
             players = self.players.all()
