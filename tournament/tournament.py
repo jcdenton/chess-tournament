@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 from datetime import datetime
-from itertools import groupby, chain
+import itertools
 import math
 import operator
 import random
 
-from django.db.models import Sum
+from django.db import models
 
 from .models import Side, Scores
 
@@ -44,7 +44,24 @@ class EloRatingMixin(object):
 
 
 class SwissSystemMixin(object):
-    def finish_current_round(self, next_round_name=None):
+    def progress(self, next_round_name=None):
+        self.finish_current_round()
+
+        if self.round_set.count() < self.max_round_count():
+            self.start_next_round(next_round_name)
+        else:
+            self.finish_tournament()
+
+    def max_round_count(self):
+        return round(math.log(self.players.count(), 2)) + round(math.log(self.players.count(), 2))
+
+    def finish_tournament(self):
+        self.update_ratings()
+        self.finished = True
+        self.end_date = datetime.now()
+        self.save()
+
+    def finish_current_round(self):
         if self.finished:
             raise UserWarning(u'The tournament "%s" is already finished' % self)
         if self.get_started_games().count() != 0:
@@ -54,20 +71,9 @@ class SwissSystemMixin(object):
         if current_round is not None:
             self.update_round_scores(current_round)
 
-        if self.round_set.count() < self.max_round_count():
-            self.start_next_round(next_round_name)
-        else:
-            self.finish_tournament()
-
-    def finish_tournament(self):
-        self.update_ratings()
-        self.finished = True
-        self.end_date = datetime.now()
-        self.save()
-
     def update_round_scores(self, current_round):
         if not current_round.finished:
-            raise UserWarning(u'Round "%s" is not finished yet' % current_round)
+            raise UserWarning(u'"%s" is not finished yet' % current_round)
 
         for game in current_round.game_set.all():
             game.update_scores()
@@ -77,71 +83,66 @@ class SwissSystemMixin(object):
             next_round_name = u'Round %s' % str(self.round_set.count() + 1)
 
         next_round = self.round_set.create(name=next_round_name, start_date=datetime.now())
-
         for pair in self.pair_players():
             next_round.game_set.create(start_date=datetime.now(), **self.map_colors(pair))
 
-    def max_round_count(self):
-        return round(math.log(self.players.count(), 2)) + round(math.log(self.players.count(), 2))
-
     def update_ratings(self):
         for player in self.players.all():
-            for score in self.get_player_scores(player):
-                player.rating += score.rating_delta
+            player.rating += self.get_player_scores(player).aggregate(models.Sum('rating_delta'))
             player.save()
 
     def pair_players(self):
-        return list(chain(map(self.pair_players_group, self.group_players())))
+        return list(itertools.chain.from_iterable(map(self.pair_players_group,
+                                                      self.normalize_groups(self.group_players()))))
 
-    def group_players(self):
-        groups = []
-        player = None
-
-        for (score, igroup) in groupby(self.get_sorted_players(), self.get_player_summary_score):
-            group = list(igroup)
-            if player is not None:
-                group.insert(0, player)
-                player = None
-            if len(group) % 2 != 0:
-                player = group.pop()
-            groups.append(group)
-
-        if player is not None:
-            groups.append([player])
-
+    def normalize_groups(self, groups):
+        for (i, group) in enumerate(groups):
+            if len(group) % 2 != 0 and i < len(groups) - 1:
+                groups[i + 1].insert(0, group.pop())
         return groups
 
+    def group_players(self):
+        return [self.sort_players(igroup) for (score, igroup) in sorted(
+            itertools.groupby(self.players.all(), self.get_player_summary_score),
+            reverse=True, key=operator.itemgetter(0))]
+
     def get_player_summary_score(self, player):
-        return self.get_player_scores(player).aggregate(Sum('score'))
+        return self.get_player_scores(player).aggregate(models.Sum('score'))
 
     def get_tournament_pairs(self):
         pairs = set((game.white, game.black) for game in self.get_games().all())
-        return pairs | set(reversed(pair) for pair in pairs)
+        return pairs | set(map(reversed, pairs))
 
     def pair_players_group(self, group):
-        players_count = len(group)
-
         pairs = []
+        group = group[:]
+        players_count = len(group)
+        opponents = group[players_count:] + group[:players_count]
+        excluding_permutations = self.get_tournament_pairs()
 
-        played_pairs = self.get_tournament_pairs()
-        for i in range(players_count / 2):
-            pair = (group[i], group[2 * i])
-            if pair in played_pairs:
-                pass  # TODO Repeat-excluding magic
-            pairs.append(pair)
-
-        if players_count % 2 != 0:
-            pairs.append((group[players_count - 1], None))
+        for (i, player) in enumerate(group):
+            opponent = opponents[i]
+            if (player, opponent) in excluding_permutations:
+                opponent = next(filter(lambda o: o is not player and (player, o) not in excluding_permutations,
+                                       opponents))
+                excluding_permutations.update({(player, opponent), (opponent, player)})
+            pairs.append((player, opponent))
 
         return pairs
 
-    def map_colors(self, pair):
+    def get_played_sides(self, pair):
         past_games = {}
+
         for player in pair:
             if player is not None:
                 past_games_white = player.game_set_white.filter(round__tournament=self).count()
                 past_games_black = player.game_set_black.filter(round__tournament=self).count()
             past_games.update({player: {Side.WHITE: past_games_white, Side.BLACK: past_games_black}})
+
+        return past_games
+
+    def map_colors(self, pair):
+        past_games = self.get_played_sides(pair)
 
         if past_games[pair[0]][Side.WHITE] < past_games[pair[1]][Side.WHITE]:
             resulting_pair = pair
@@ -155,12 +156,14 @@ class SwissSystemMixin(object):
             resulting_pair
         ))
 
-    def get_sorted_players(self):
+    def sort_players(self, players=None):
         """
         Sorts the players by their rating in the first round and by current tournament score in all the following ones.
         """
+        if players is None:
+            players = self.players.all()
         if self.get_games().count() == 0:
             compare_key = operator.attrgetter('rating')
         else:
             compare_key = self.get_player_summary_score
-        return sorted(self.players.all(), reverse=True, key=compare_key)
+        return sorted(players, reverse=True, key=compare_key)
