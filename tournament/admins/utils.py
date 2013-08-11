@@ -67,7 +67,8 @@ def get_fk_field_link(name, description=None, attribute=None):
     description = description or name
 
     def closure(self, obj):
-        change_url = urlresolvers.reverse('admin:%s_%s_change' % (self.model._meta.app_label, name), args=(getattr(obj, attribute).pk,))
+        change_url = urlresolvers.reverse('admin:%s_%s_change' %
+                                          (self.model._meta.app_label, name), args=(getattr(obj, attribute).pk,))
         return u'<a href="%s">%s</a>' % (change_url, getattr(obj, attribute))
 
     closure.allow_tags = True
