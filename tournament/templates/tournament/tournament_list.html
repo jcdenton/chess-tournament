@@ -1,7 +1,32 @@
 {% extends 'tournament/layout.html' %}
 
 {% block content %}
-    {% for t in tournaments %}
-        {{ t }}
-    {% endfor %}
+    {% if tournaments %}
+        <div class="tournament-list">
+            <table class="table table-striped table-bordered table-hover ">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Participants</th>
+                    <th>Referee</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Finished</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for t in tournaments %}
+                    <tr data-pk="{{ t.pk }}">
+                        <td>{{ t.name }}</td>
+                        <td>{{ t.players_count }}</td>
+                        <td>{{ t.referee }}</td>
+                        <td>{{ t.start_date }}</td>
+                        <td>{{ t.end_date }}</td>
+                        <td>{{ t.finished }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
 {% endblock %}
