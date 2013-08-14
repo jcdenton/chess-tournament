@@ -9,4 +9,5 @@ urlpatterns = patterns('',
                        url(r'^$', RedirectView.as_view(url='tournament/')),
                        url(r'^tournament/', include('tournament.urls', namespace='tournament')),
                        url(r'^admin/', include(admin.site.urls)),
+                       url(r'^djangojs/', include('djangojs.urls')),
                        )

@@ -4,7 +4,7 @@ from django.views import generic
 from .models import Tournament
 
 
-class TournamentsView(generic.ListView):
+class TournamentListView(generic.ListView):
     context_object_name = 'tournaments'
 
     def get_queryset(self):

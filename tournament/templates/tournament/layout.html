@@ -1,17 +1,15 @@
-{% load staticfiles kwacros %}
+{% load staticfiles js %}
 <!DOCTYPE html>
-{% kwacro css href %}<link type="text/css" rel="stylesheet" href="{% static href %}">{% endkwacro %}
-{% kwacro js src %}<script type="text/javascript" src="{% static src %}"></script>{% endkwacro %}
 <html>
 <head>
     <title>{% block title %}Chess Tournament{% endblock %}</title>
     {% block css %}
-        {% usekwacro css 'css/bootstrap.css' %}
-        {% usekwacro css 'css/tournament.css' %}
+        {% css 'css/bootstrap.css' %}
+        {% css 'css/tournament.css' %}
     {% endblock %}
     {% block js %}
-        {% usekwacro js 'js/jquery.js' %}
-        {% usekwacro js 'js/bootstrap.js' %}
+        {% django_js %}
+        {% js 'js/bootstrap.js' %}
     {% endblock %}
 </head>
 <body>

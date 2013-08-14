@@ -6,5 +6,5 @@ from . import views
 
 urlpatterns = patterns('',
                        url(r'^$', generic.RedirectView.as_view(url='tournaments/'), name='index'),
-                       url(r'^tournaments/', views.TournamentsView.as_view(), name='tournaments'),
+                       url(r'^tournaments/$', views.TournamentListView.as_view(), name='tournament_list'),
                        )

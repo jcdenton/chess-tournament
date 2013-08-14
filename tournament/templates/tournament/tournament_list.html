@@ -2,31 +2,29 @@
 
 {% block content %}
     {% if tournaments %}
-        <div class="tournament-list">
-            <table class="table table-striped table-bordered table-hover ">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Participants</th>
-                    <th>Referee</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Finished</th>
+        <table class="tournament-list-table table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Participants</th>
+                <th>Referee</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Finished</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for tournament in tournaments %}
+                <tr data-pk="{{ tournament.pk }}">
+                    <td>{{ tournament.name }}</td>
+                    <td>{{ tournament.players_count }}</td>
+                    <td>{{ tournament.referee }}</td>
+                    <td>{{ tournament.start_date }}</td>
+                    <td>{{ tournament.end_date }}</td>
+                    <td>{{ tournament.finished }}</td>
                 </tr>
-                </thead>
-                <tbody>
-                {% for t in tournaments %}
-                    <tr data-pk="{{ t.pk }}">
-                        <td>{{ t.name }}</td>
-                        <td>{{ t.players_count }}</td>
-                        <td>{{ t.referee }}</td>
-                        <td>{{ t.start_date }}</td>
-                        <td>{{ t.end_date }}</td>
-                        <td>{{ t.finished }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
 {% endblock %}
