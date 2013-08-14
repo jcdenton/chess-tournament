@@ -1,0 +1,12 @@
+{% extends 'tournament/layout.html' %}
+
+{% block content %}
+    <div data-pk="{{ tournament.pk }}">
+        <p>{{ tournament.name }}</p>
+        <p>{{ tournament.players_count }}</p>
+        <p>{{ tournament.referee }}</p>
+        <p>{{ tournament.start_date }}</p>
+        <p>{{ tournament.end_date }}</p>
+        <p>{{ tournament.finished }}</p>
+    </div>
+{% endblock %}

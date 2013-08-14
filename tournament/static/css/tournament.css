@@ -11,3 +11,7 @@
 .nav-tabs {
     font-weight: bold;
 }
+
+table.tournament-list-table > tbody > tr {
+    cursor: pointer;
+}

@@ -27,4 +27,12 @@
             </tbody>
         </table>
     {% endif %}
+    <script>
+        $(function() {
+            $('.tournament-list-table').on('click', 'tr', function(e) {
+                var pk = $(this).data('pk');
+                document.location = Django.url('tournament:tournament_detail', pk);
+            })
+        });
+    </script>
 {% endblock %}
