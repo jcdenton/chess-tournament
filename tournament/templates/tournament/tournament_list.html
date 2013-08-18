@@ -26,6 +26,10 @@
             {% endfor %}
             </tbody>
         </table>
+    {% else %}
+        <p class="alert alert-info">
+            No tournaments are available.
+        </p>
     {% endif %}
     <script>
         $(function() {
