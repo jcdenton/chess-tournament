@@ -15,3 +15,8 @@
 table.tournament-list-table > tbody > tr {
     cursor: pointer;
 }
+
+.inline-icon {
+    margin-right: 0.3em;
+    vertical-align: baseline;
+}
