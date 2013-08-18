@@ -70,6 +70,9 @@ class Tournament(models.Model, SwissSystemMixin):
     def get_started_games(self):
         return self.get_games().filter(finished=False)
 
+    def get_finished_games(self):
+        return self.get_games().filter(finished=True)
+
     def get_latest_round(self):
         try:
             rounds = self.round_set.order_by('-start_date', '-id')
