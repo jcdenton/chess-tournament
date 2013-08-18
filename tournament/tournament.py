@@ -135,7 +135,7 @@ class SwissSystemMixin(object):
             reverse=True, key=operator.itemgetter(0))]
 
     def get_player_summary_score(self, player):
-        return self.get_player_scores(player).aggregate(models.Sum('score'))
+        return self.get_player_scores(player).aggregate(models.Sum('score')).get('score__sum') or 0.0
 
     def get_tournament_pairs(self):
         """
