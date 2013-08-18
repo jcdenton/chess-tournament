@@ -14,3 +14,14 @@ class TournamentListView(generic.ListView):
 class TournamentDetailView(generic.DetailView):
     model = Tournament
     context_object_name = 'tournament'
+
+    def get_context_data(self, **kwargs):
+        context = super(TournamentDetailView, self).get_context_data(**kwargs)
+        tournament = context.get(self.context_object_name)
+
+        players = tournament.sort_players()
+        for player in players:
+            player.score = tournament.get_player_summary_score(player)
+
+        context.update(players=players)
+        return context

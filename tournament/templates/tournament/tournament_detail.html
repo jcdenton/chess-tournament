@@ -1,12 +1,64 @@
 {% extends 'tournament/layout.html' %}
+{% load static %}
 
 {% block content %}
-    <div data-pk="{{ tournament.pk }}">
-        <p>{{ tournament.name }}</p>
-        <p>{{ tournament.players_count }}</p>
-        <p>{{ tournament.referee }}</p>
-        <p>{{ tournament.start_date }}</p>
-        <p>{{ tournament.end_date }}</p>
-        <p>{{ tournament.finished }}</p>
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+            <li><a href="#progress" data-toggle="tab">Progress</a></li>
+            <li><a href="#rating" data-toggle="tab">Rating Summary</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="details">
+                <table class="table table-hover">
+                    <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ tournament.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Referee</td>
+                        <td>{{ tournament.referee }}</td>
+                    </tr>
+                    <tr>
+                        <td>Start Date</td>
+                        <td>{{ tournament.start_date }}</td>
+                    </tr>
+                    <tr>
+                        <td>End Date</td>
+                        <td>{{ tournament.end_date }}</td>
+                    </tr>
+                    <tr>
+                        <td>Finished</td>
+                        <td>{% if tournament.finished %}Yes{% else %}No{% endif %}</td>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane active" id="progress">
+
+            </div>
+            <div class="tab-pane" id="rating">
+                <table class="player-list-table table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Country</th>
+                        <th>Rating</th>
+                        <th>Tournament Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for player in players %}
+                        <tr>
+                            <td>{{ player.name }}</td>
+                            <td><img class="inline-icon" src="{% static player.country.flag %}">{{ player.country.name }}</td>
+                            <td>{{ player.rating }}</td>
+                            <td>{{ player.score }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}
