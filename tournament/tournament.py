@@ -215,7 +215,7 @@ class SwissSystemMixin(object):
         """
         if players is None:
             players = self.players.all()
-        if self.get_games().count() == 0:
+        if self.get_finished_games().count() == 0:
             compare_key = operator.attrgetter('rating')
         else:
             compare_key = self.get_player_summary_score
