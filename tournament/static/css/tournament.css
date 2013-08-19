@@ -20,3 +20,11 @@ table.tournament-list-table > tbody > tr {
     margin-right: 0.3em;
     vertical-align: baseline;
 }
+
+.game-row > td:nth-child(2), .game-row > td:nth-child(3), .game-row > td:nth-child(4) {
+    background-color: whitesmoke;
+}
+
+.game-row > td:nth-child(6), .game-row > td:nth-child(7), .game-row > td:nth-child(8) {
+    background-color: gainsboro;
+}

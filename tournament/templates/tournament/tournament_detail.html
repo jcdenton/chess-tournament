@@ -34,8 +34,49 @@
                     </tbody>
                 </table>
             </div>
-            <div class="tab-pane active" id="progress">
-
+            <div class="tab-pane" id="progress">
+                {% for round in tournament.round_set.all %}
+                    <div>
+                        <ul class="inline">
+                            <li>{{ round.start_date }}</li>
+                            <span>&mdash;</span>
+                            <li>{{ round.name }}</li>
+                            <li class="pull-right">{% if round.finished %}Finished: {{ round.end_date }}{% else %}Not Finished{% endif %}</li>
+                        </ul>
+                        {% if round.game_set.count > 0 %}
+                            <div style="margin-left: 2em;">
+                                <table class="table table-stripped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Started</th>
+                                        <th>Rating</th>
+                                        <th>White</th>
+                                        <th colspan="3" class="text-center">Scores</th>
+                                        <th>Black</th>
+                                        <th>Rating</th>
+                                        <th>Finished</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for game in round.game_set.all %}
+                                        <tr class="game-row">
+                                            <td>{{ game.start_date|date:'M d, Y, H:m' }}</td>
+                                            <td>{{ game.white.rating }}</td>
+                                            <td>{{ game.white.name }}</td>
+                                            <td>1.0</td>
+                                            <td>:</td>
+                                            <td>0.0</td>
+                                            <td>{{ game.black.name }}</td>
+                                            <td>{{ game.black.rating }}</td>
+                                            <td>{{ game.end_date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
             <div class="tab-pane" id="rating">
                 <table class="player-list-table table table-striped table-hover">
@@ -51,7 +92,8 @@
                     {% for player in players %}
                         <tr>
                             <td>{{ player.name }}</td>
-                            <td><img class="inline-icon" src="{% static player.country.flag %}">{{ player.country.name }}</td>
+                            <td><img class="inline-icon"
+                                     src="{% static player.country.flag %}">{{ player.country.name }}</td>
                             <td>{{ player.rating }}</td>
                             <td>{{ player.score }}</td>
                         </tr>
