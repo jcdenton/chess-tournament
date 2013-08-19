@@ -27,15 +27,15 @@
             </tbody>
         </table>
     {% else %}
-        <p class="alert alert-info">
-            No tournaments are available.
-        </p>
+        <p class="alert alert-info">No tournaments are available.</p>
     {% endif %}
     <script>
-        $(function() {
-            $('.tournament-list-table').on('click', 'tr', function(e) {
+        $(function () {
+            $('.tournament-list-table').on('click', 'tr', function (e) {
                 var pk = $(this).data('pk');
-                document.location = Django.url('tournament:tournament_detail', pk);
+                if (pk) {
+                    document.location = Django.url('tournament:tournament_detail', pk);
+                }
             })
         });
     </script>
