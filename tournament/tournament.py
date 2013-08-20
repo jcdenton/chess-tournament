@@ -12,18 +12,21 @@ from .models import Side, Scores
 
 class EloRatingMixin(object):
     def update_scores(self):
-        self.score_set.clear()
-        self.score_set.create(player=self.white, side=Side.WHITE, score=self.get_side_score(Side.WHITE),
-                              rating_delta=self.get_rating_delta(self.white, self.black,
-                                                                 self.get_side_score(Side.WHITE)))
-        self.score_set.create(player=self.black, side=Side.BLACK, score=self.get_side_score(Side.BLACK),
-                              rating_delta=self.get_rating_delta(self.black, self.white,
-                                                                 self.get_side_score(Side.BLACK)))
+        for score in self.score_set.all():
+            score.delete()
+        if self.white is not None:
+            self.score_set.create(player=self.white, side=Side.WHITE, score=self.get_side_score(Side.WHITE),
+                                  rating_delta=self.get_rating_delta(self.white, self.black,
+                                                                     self.get_side_score(Side.WHITE)))
+        if self.black is not None:
+            self.score_set.create(player=self.black, side=Side.BLACK, score=self.get_side_score(Side.BLACK),
+                                  rating_delta=self.get_rating_delta(self.black, self.white,
+                                                                     self.get_side_score(Side.BLACK)))
 
     def get_side_score(self, side):
         if self.winner == side:
             return Scores.WIN
-        elif self.winner is None:
+        elif self.finished and self.winner is None:
             return Scores.DRAW
         else:
             return Scores.DEFEAT
@@ -40,7 +43,7 @@ class EloRatingMixin(object):
             return 15
 
     def get_expectation(self, player, opponent):
-        return 1 / (1 + 10 ** ((opponent.rating - player.rating) / 400))
+        return 1 / (1 + 10 ** ((opponent.rating or 0.0 - player.rating) / 400)) if opponent is not None else 1.0
 
 
 class SwissSystemMixin(object):
@@ -122,7 +125,8 @@ class SwissSystemMixin(object):
         for (i, group) in enumerate(groups):
             if len(group) % 2 != 0 and i < len(groups) - 1:
                 groups[i + 1].insert(0, group.pop())
-        return groups
+
+        return filter(lambda g: len(g) > 0, groups)
 
     def group_players(self):
         """
@@ -130,9 +134,8 @@ class SwissSystemMixin(object):
         :returns: list of lists of players
         :rtype: list
         """
-        return [self.sort_players(igroup) for (score, igroup) in sorted(
-            itertools.groupby(self.players.all(), self.get_player_summary_score),
-            reverse=True, key=operator.itemgetter(0))]
+
+        return [self.sort_players(igroup) for score, igroup in itertools.groupby(self.sort_players(), self.get_player_summary_score)]
 
     def get_player_summary_score(self, player):
         return self.get_player_scores(player).aggregate(models.Sum('score')).get('score__sum') or 0.0
@@ -143,7 +146,7 @@ class SwissSystemMixin(object):
         :rtype: set
         """
         pairs = set((game.white, game.black) for game in self.get_games().all())
-        return pairs | set(map(reversed, pairs))
+        return pairs | set(map(tuple, map(reversed, pairs)))
 
     def pair_players_group(self, group):
         """
@@ -155,15 +158,21 @@ class SwissSystemMixin(object):
         pairs = []
         group = group[:]
         players_count = len(group)
-        opponents = group[players_count:] + group[:players_count]
+        opponents = group[players_count / 2:] + group[:players_count / 2]
         excluding_permutations = self.get_tournament_pairs()
 
         for (i, player) in enumerate(group):
             opponent = opponents[i]
+            opponent = opponent if player is not opponent else None
+
             if (player, opponent) in excluding_permutations:
-                opponent = next(filter(lambda o: o is not player and (player, o) not in excluding_permutations,
-                                       opponents))
-                excluding_permutations.update({(player, opponent), (opponent, player)})
+                try:
+                    opponent = next(
+                        itertools.ifilter(lambda o: player is not o and (player, o) not in excluding_permutations,
+                                          opponents))
+                except StopIteration:
+                    opponent = None
+            excluding_permutations.update({(player, opponent), (opponent, player)})
             pairs.append((player, opponent))
 
         return pairs
