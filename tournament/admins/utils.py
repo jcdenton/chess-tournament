@@ -56,7 +56,7 @@ def change_form_action(action):
     @wraps(action)
     def closure(self, request, queryset):
         action(self, request, queryset)
-        return redirect(urlresolvers.reverse(self.get_admin_url_pattern(), args=(next(queryset).pk,)))
+        return redirect(urlresolvers.reverse(self.get_admin_url_pattern(), args=(next(queryset.iterator()).pk,)))
 
     closure.change_form_action = True
     return closure

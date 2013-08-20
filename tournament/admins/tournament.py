@@ -59,7 +59,7 @@ class TournamentAdmin(ChangeFormActionsMixin, admin.ModelAdmin):
     @change_form_action
     def next_round(self, request, queryset):
         try:
-            next(queryset).progress()
+            next(queryset.iterator()).progress()
         except UserWarning, e:
             self.message_user(request, e, level=messages.ERROR)
 
