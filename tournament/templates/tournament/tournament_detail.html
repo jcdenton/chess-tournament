@@ -1,5 +1,5 @@
 {% extends 'tournament/layout.html' %}
-{% load static %}
+{% load static tournament %}
 
 {% block content %}
     <div class="tabbable">
@@ -63,12 +63,12 @@
                                             <td>{{ game.start_date|date:'M d, Y, H:m' }}</td>
                                             <td>{{ game.white.rating }}</td>
                                             <td>{{ game.white.name }}</td>
-                                            <td>1.0</td>
+                                            <td>{{ game|side_score:'white' }}</td>
                                             <td>:</td>
-                                            <td>0.0</td>
+                                            <td>{{ game|side_score:'black' }}</td>
                                             <td>{{ game.black.name }}</td>
                                             <td>{{ game.black.rating }}</td>
-                                            <td>{{ game.end_date }}</td>
+                                            <td>{{ game.end_date|date:'M d, Y, H:m' }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
