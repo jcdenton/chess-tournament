@@ -119,8 +119,7 @@ from tournament import EloRatingMixin
 class Game(EloRatingMixin, models.Model):
     WINNER_CHOICES = (
         (Side.WHITE, 'White'),
-        (Side.BLACK, 'Black'),
-        (None, 'Draw')
+        (Side.BLACK, 'Black')
     )
     white = models.ForeignKey(Player, blank=True, null=True, related_name='game_set_white')
     black = models.ForeignKey(Player, blank=True, null=True, related_name='game_set_black')
